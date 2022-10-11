@@ -88,7 +88,7 @@ public class CoalForHaunchy extends AbstractQuest {
 				ConversationPhrases.QUEST_MESSAGES,
 				new QuestNotStartedCondition(QUEST_SLOT),
 				ConversationStates.QUEST_OFFERED,
-				"I cannot use wood for this huge BBQ. To keep the heat I need some really old stone coal but there isn't much left. The problem is, that I can't fetch it myself because my steaks would burn then so I have to stay here. Can you bring me 25 pieces of #coal for my BBQ please?",
+				"I cannot use wood for this huge BBQ. To keep the heat I need some really old stone coal or charcoal but there isn't much left. The problem is, that I can't fetch it myself because my steaks would burn then so I have to stay here. Can you bring me 25 pieces of #coal or 10 pieces of #charcoal for my BBQ please?",
 				null);
 
 		npc.add(
@@ -97,6 +97,14 @@ public class CoalForHaunchy extends AbstractQuest {
 				null,
 				ConversationStates.QUEST_OFFERED,
 				"Coal isn't easy to find. You normally can find it somewhere in the ground but perhaps you are lucky and find some in the old Semos Mine tunnels...",
+				null);
+		
+		npc.add(
+				ConversationStates.QUEST_OFFERED,
+				Arrays.asList("charcoal"),
+				null,
+				ConversationStates.QUEST_OFFERED,
+				"You can get charcoal by completing Sally's quest",
 				null);
 
         // player has completed the quest (doesn't happen here)
@@ -121,13 +129,13 @@ public class CoalForHaunchy extends AbstractQuest {
 				new AndCondition(new NotCondition(new TimePassedCondition(QUEST_SLOT, 1, REQUIRED_MINUTES)), new QuestStateStartsWithCondition(QUEST_SLOT, "waiting;")),
 				ConversationStates.ATTENDING,
 				null,
-				new SayTimeRemainingAction(QUEST_SLOT, 1, REQUIRED_MINUTES, "The coal amount behind my counter is still high enough. I will not need more for"));
+				new SayTimeRemainingAction(QUEST_SLOT, 1, REQUIRED_MINUTES, "The coal and charcoal amount behind my counter is still high enough. I will not need more for"));
 
 		// Player agrees to get the coal, increase 5 karma
 		npc.add(ConversationStates.QUEST_OFFERED,
 				ConversationPhrases.YES_MESSAGES, null,
 				ConversationStates.ATTENDING,
-				"Thank you! If you have found 25 pieces, say #coal to me so I know you have it. I'll be sure to give you a nice and tasty reward.",
+				"Thank you! If you have found 25 pieces of coal or 10 pieces of #charcoal, say #coal or #charcoal to me so I know you have it. I'll be sure to give you a nice and tasty reward.",
 				new SetQuestAndModifyKarmaAction(QUEST_SLOT, "start", 5));
 
 		// Player says no, they've lost karma.
