@@ -120,7 +120,7 @@ public class CoalForHaunchy extends AbstractQuest {
 				ConversationPhrases.QUEST_MESSAGES,
 				new AndCondition(new TimePassedCondition(QUEST_SLOT, 1, REQUIRED_MINUTES), new QuestStateStartsWithCondition(QUEST_SLOT, "waiting;")),
 				ConversationStates.QUEST_OFFERED,
-				"The last coal you brought me is mostly gone again. Will you bring me some more?",
+				"The last items you brought me are mostly gone again. Will you bring me some more?",
 				null);
 
 		// player asks about quest which he has done already but it is not time to repeat it
@@ -135,7 +135,7 @@ public class CoalForHaunchy extends AbstractQuest {
 		npc.add(ConversationStates.QUEST_OFFERED,
 				ConversationPhrases.YES_MESSAGES, null,
 				ConversationStates.ATTENDING,
-				"Thank you! If you have found 25 pieces of coal or 10 pieces of #charcoal, say #coal or #charcoal to me so I know you have it. I'll be sure to give you a nice and tasty reward.",
+				"Thank you! If you have found 25 pieces of #coal or 10 pieces of #charcoal, say #coal or #charcoal to me so I know you have it. I'll be sure to give you a nice and tasty reward.",
 				new SetQuestAndModifyKarmaAction(QUEST_SLOT, "start", 5));
 
 		// Player says no, they've lost karma.
@@ -153,14 +153,30 @@ public class CoalForHaunchy extends AbstractQuest {
 	private void bringCoalStep() {
 		final SpeakerNPC npc = npcs.get("Haunchy Meatoch");
 
-		final List<String> triggers = new ArrayList<String>();
-		triggers.add("coal");
-		triggers.add("stone coal");
-		triggers.addAll(ConversationPhrases.QUEST_MESSAGES);
+		// words that trigger the coal mission
+		final List<String> coalTriggers = new ArrayList<String>();
+		coalTriggers.add("coal");
+		coalTriggers.add("stone coal");
 
-		// player asks about quest or says coal when they are supposed to bring some coal and they have it
+		
+		// words that trigger the charcoal mission
+		final List<String> charcoalTriggers = new ArrayList<String>();
+		charcoalTriggers.add("charcoal");
+		
+	
+		
+        // player asks about quest but doesn't specify what they want to bring
+		
 		npc.add(
-				ConversationStates.ATTENDING, triggers,
+				ConversationStates.ATTENDING, ConversationPhrases.QUEST_MESSAGES,
+				new AndCondition(new QuestInStateCondition(QUEST_SLOT, "start")),
+				ConversationStates.ATTENDING,
+				"Have you found some #coal or #charcoal?",
+				null);
+		
+		// player asks about coal when they are supposed to bring some coal and they have it
+		npc.add(
+				ConversationStates.ATTENDING, coalTriggers,
 				new AndCondition(new QuestInStateCondition(QUEST_SLOT, "start"), new PlayerHasItemWithHimCondition("coal",25)),
 				ConversationStates.ATTENDING,
 				null,
@@ -181,18 +197,51 @@ public class CoalForHaunchy extends AbstractQuest {
 										+ System.currentTimeMillis(), 10.0).fire(player, sentence, npc);
 							}
 						}));
-
-		// player asks about quest or says coal when they are supposed to bring some coal and they don't have it
+		
+		// player asks about charcoal when they are supposed to bring some charcoal and they have it
 		npc.add(
-				ConversationStates.ATTENDING, triggers,
+				ConversationStates.ATTENDING, charcoalTriggers,
+				new AndCondition(new QuestInStateCondition(QUEST_SLOT, "start"), new PlayerHasItemWithHimCondition("charcoal",10)),
+				ConversationStates.ATTENDING,
+				null,
+				new MultipleActions(
+						new DropItemAction("charcoal",10),
+						new IncreaseXPAction(200),
+						new IncreaseKarmaAction(20),
+						new ChatAction() {
+							@Override
+							public void fire(final Player player,
+									final Sentence sentence,
+									final EventRaiser npc) {
+								int grilledsteakAmount = Rand.rand(4) + 1;
+								new EquipItemAction("grilled steak", grilledsteakAmount, true).fire(player, sentence, npc);
+								npc.say("Thank you!! Take " + Grammar.thisthese(grilledsteakAmount) + " " +
+										Grammar.quantityNumberStrNoun(grilledsteakAmount, "grilled steak") + " from my grill!");
+								new SetQuestAndModifyKarmaAction(getSlotName(), "waiting;"
+										+ System.currentTimeMillis(), 10.0).fire(player, sentence, npc);
+							}
+						}));
+
+		// player asks about coal when they are supposed to bring some coal and they don't have it
+		npc.add(
+				ConversationStates.ATTENDING, coalTriggers,
 				new AndCondition(new QuestInStateCondition(QUEST_SLOT, "start"), new NotCondition(new PlayerHasItemWithHimCondition("coal",25))),
 				ConversationStates.ATTENDING,
 				"You don't have the coal amount which I need yet. Go and pick some more pieces up, please.",
 				null);
-
+		
+		// player asks about charcoal when they are supposed to bring some coal and they don't have it
+		npc.add(
+				ConversationStates.ATTENDING, charcoalTriggers,
+				new AndCondition(new QuestInStateCondition(QUEST_SLOT, "start"), new NotCondition(new PlayerHasItemWithHimCondition("charcoal",10))),
+				ConversationStates.ATTENDING,
+				"You don't have the charcoal amount which I need yet. Go and pick some more pieces up, please.",
+				null);
+		
+				
 		npc.add(
 				ConversationStates.ATTENDING,
-				Arrays.asList("coal","stone coal"),
+				Arrays.asList("coal","stone coal", "charcoal"),
 				new QuestNotInStateCondition(QUEST_SLOT,"start"),
 				ConversationStates.ATTENDING,
 				"Sometime you could do me a #favour ...", null);
