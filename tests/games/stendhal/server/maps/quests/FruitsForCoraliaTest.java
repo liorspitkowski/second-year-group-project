@@ -14,6 +14,7 @@ package games.stendhal.server.maps.quests;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static utilities.SpeakerNPCTestHelper.getReply;
@@ -332,5 +333,122 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 
 		assertEquals("Bye.", getReply(npc));
 		*/
+	}
+	@Test
+	public void testGivingEverything() {
+		
+		npc = SingletonRepository.getNPCList().get("Coralia");
+		en = npc.getEngine();
+		
+		// -----------------------------------------------
+		
+		// Set up and accept the quest
+		en.step(player, "hi");
+		en.step(player, "hat");
+		en.step(player, "fruit");
+		en.step(player, "yes");
+		en.step(player, "bye");
+		en.step(player, "hi");
+		en.step(player, "quest");
+		en.step(player, "everything"); // test that 'everything' can be said straight after the quest (without saying yes)
+		
+		// -----------------------------------------------
+		// Try first with no fruit equipped
+		assertEquals("Oh, you didnt have all of the items I need, I'd still like 5 #bananas, 9 #cherries, 2 #'bunches of grapes', 4 #pears, 2 #pomegranates, and a #watermelon. ", getReply(npc));
+		en.step(player, "bye");
+		
+		// -----------------------------------------------
+		// Equip fruit
+		
+		PlayerTestHelper.equipWithStackableItem(player, "apple", 4);
+		PlayerTestHelper.equipWithStackableItem(player, "cherry", 9);
+		PlayerTestHelper.equipWithStackableItem(player, "banana", 5);
+		PlayerTestHelper.equipWithStackableItem(player, "grapes", 2);
+		PlayerTestHelper.equipWithStackableItem(player, "pear", 4);
+		PlayerTestHelper.equipWithStackableItem(player, "pomegranate", 2);
+		PlayerTestHelper.equipWithStackableItem(player, "watermelon", 1);
+		
+		// -----------------------------------------------
+		
+		en.step(player, "hi");
+		en.step(player, "quest");
+		en.step(player, "yes"); // Test saying yes and then everything
+		en.step(player, "everything");
+		
+		// -----------------------------------------------
+		
+		// Check karma and XP values before
+		final int xp = player.getXP();
+		final double karma = player.getKarma();
+		
+		// -----------------------------------------------
+		// Check the player receives their reward
+		
+		assertEquals("My hat has never looked so delightful! Thank you ever so much! Here, take this as a reward.", getReply(npc));
+		assertTrue(player.isEquipped("crepes suzette"));
+		assertTrue(player.isEquipped("minor potion"));
+		assertThat(player.getXP(), greaterThan(xp));
+		assertThat(player.getKarma(), greaterThan(karma));
+		
+		// -----------------------------------------------
+		// Check Coralia takes the fruits
+		
+		assertFalse(player.isEquipped("apple"));
+		assertFalse(player.isEquipped("cherry"));
+		assertFalse(player.isEquipped("banana"));
+		assertFalse(player.isEquipped("grapes"));
+		assertFalse(player.isEquipped("pear"));
+		assertFalse(player.isEquipped("pomegranate"));
+		assertFalse(player.isEquipped("watermelon"));
+		
+		// -----------------------------------------------
+
+		player.setQuest(questSlot, "done;0"); // Reset quest
+		
+		// -----------------------------------------------
+		// Testing giving one item first and then the rest
+		PlayerTestHelper.equipWithStackableItem(player, "apple", 4);
+		PlayerTestHelper.equipWithStackableItem(player, "cherry", 9);
+		PlayerTestHelper.equipWithStackableItem(player, "banana", 5);
+		PlayerTestHelper.equipWithStackableItem(player, "grapes", 2);
+		PlayerTestHelper.equipWithStackableItem(player, "pear", 4);
+		PlayerTestHelper.equipWithStackableItem(player, "pomegranate", 2);
+		PlayerTestHelper.equipWithStackableItem(player, "watermelon", 1);
+		
+		// -----------------------------------------------
+		
+		en.step(player, "hi");
+		en.step(player, "hat");
+		en.step(player, "fruit");
+		en.step(player, "yes");
+		en.step(player, "bye");
+		en.step(player, "hi");
+		en.step(player, "quest");
+		en.step(player, "cherries");
+		
+		// -----------------------------------------------
+		
+		assertEquals("Wonderful! Did you bring anything else with you?", getReply(npc));
+		en.step(player, "everything");
+		
+		// -----------------------------------------------
+		
+		assertEquals("My hat has never looked so delightful! Thank you ever so much! Here, take this as a reward.", getReply(npc));
+		
+		// -----------------------------------------------
+		// Check Coralia takes the fruits
+		
+		assertFalse(player.isEquipped("apple"));
+		assertFalse(player.isEquipped("cherry"));
+		assertFalse(player.isEquipped("banana"));
+		assertFalse(player.isEquipped("grapes"));
+		assertFalse(player.isEquipped("pear"));
+		assertFalse(player.isEquipped("pomegranate"));
+		assertFalse(player.isEquipped("watermelon"));
+		
+		// -----------------------------------------------
+
+		player.setQuest(questSlot, "done;0"); // Reset quest
+		
 	}
 }
