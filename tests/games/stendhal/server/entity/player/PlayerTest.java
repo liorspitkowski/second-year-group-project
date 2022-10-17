@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
@@ -34,6 +35,8 @@ import games.stendhal.common.constants.Nature;
 import games.stendhal.server.core.engine.StendhalRPZone;
 import games.stendhal.server.entity.Entity;
 import games.stendhal.server.entity.Outfit;
+import games.stendhal.server.entity.creature.Cat;
+import games.stendhal.server.entity.creature.Sheep;
 import games.stendhal.server.entity.item.Item;
 import games.stendhal.server.entity.status.StatusType;
 import games.stendhal.server.maps.MockStendhalRPRuleProcessor;
@@ -67,6 +70,63 @@ public class PlayerTest {
 		killer = PlayerTestHelper.createPlayer("killer");
 	}
 
+	
+	/**
+	 * Tests for isZoneChangeAllowed (when player's pet sheep is far from them).
+	 * Tests for a message to alert the user if the sheep is too far for them to change zone.
+	 */
+	@Test
+	public void testIsZoneChangeAllowedWithDistantSheep() {
+		
+		// creates test zone
+		final StendhalRPZone zone = new StendhalRPZone("testzone", 100, 100);	
+		MockStendlRPWorld.get().addRPZone(zone);
+		
+		// creates test player bob
+		Player bob = PlayerTestHelper.createPlayer("bob");
+		zone.add(bob);
+
+		// creates and adds pet sheep meh to zone and sets bob as owner
+		final Sheep meh = new Sheep(bob);
+		zone.add(meh);
+				
+		bob.setPosition(75, 75);	// moves bob more than 7 * 7 square metres away from the sheep
+				
+		bob.isZoneChangeAllowed();	// checks if bob can change zone
+		
+		String reply = PlayerTestHelper.getPrivateReply(bob);	// gets reply from private message
+		
+		assertEquals("Your sheep is too far away, wait for it to get closer before changing zone.", reply);	// compares to expected alert
+	}
+	
+	/**
+	 * Tests for isZoneChangeAllowed (when player's pet is far from them).
+	 * Tests for a message to alert the user if the pet is too far for them to change zone.
+	 */
+	@Test
+	public void testIsZoneChangeAllowedWithDistantPet() {
+		
+		// creates test zone
+		final StendhalRPZone zone = new StendhalRPZone("testzone", 100, 100);	
+		MockStendlRPWorld.get().addRPZone(zone);
+		
+		// creates test player bob
+		Player bob = PlayerTestHelper.createPlayer("bob");
+		zone.add(bob);
+
+		// creates and adds pet cat cat to zone and sets bob as owner
+		Cat cat = new Cat(bob);
+		zone.add(cat);
+
+		bob.setPosition(75, 75);	// moves bob more than 7 * 7 square metres away from the cat
+				
+		bob.isZoneChangeAllowed();	// checks if bob can change zone
+		
+		String reply = PlayerTestHelper.getPrivateReply(bob);	// gets reply from private message
+		
+		assertEquals("Your pet is too far away, wait for it to get closer before changing zone.", reply);	// compares to expected alert
+	}
+	
 	/**
 	 * Tests for hashCode.
 	 */
