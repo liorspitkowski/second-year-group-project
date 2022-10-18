@@ -335,7 +335,7 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		*/
 	}
 	@Test
-	public void testGivingEverything() {
+	public void testGivingEverythingwithNoFruit() {
 		
 		npc = SingletonRepository.getNPCList().get("Coralia");
 		en = npc.getEngine();
@@ -354,11 +354,23 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		
 		// -----------------------------------------------
 		// Try first with no fruit equipped
-		assertEquals("Oh, you didnt have all of the items I need, I'd still like 5 #bananas, 9 #cherries, 2 #'bunches of grapes', 4 #pears, 2 #pomegranates, and a #watermelon. ", getReply(npc));
+		assertEquals("Oh, you didnt have all of the items I need, I'd still like: 4 #apples, 5 #bananas, 9 #cherries, 2 #'bunches of grapes', 4 #pears, 2 #pomegranates, and a #watermelon.", getReply(npc));
 		en.step(player, "bye");
 		
+		player.setQuest(questSlot, "done;0");
+	}
+	@Test
+	public void testGivingEverythingwithFruit() {
+		
+		npc = SingletonRepository.getNPCList().get("Coralia");
+		en = npc.getEngine();
 		// -----------------------------------------------
-		// Equip fruit
+		// Set up and Equip fruit
+		en.step(player, "hi");
+		en.step(player, "hat");
+		en.step(player, "fruit");
+		en.step(player, "yes");
+		en.step(player, "bye");
 		
 		PlayerTestHelper.equipWithStackableItem(player, "apple", 4);
 		PlayerTestHelper.equipWithStackableItem(player, "cherry", 9);
@@ -369,18 +381,17 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		PlayerTestHelper.equipWithStackableItem(player, "watermelon", 1);
 		
 		// -----------------------------------------------
+		// Check karma and XP values before
+		final int xp = player.getXP();
+		final double karma = player.getKarma();
+		
+		// -----------------------------------------------
 		
 		en.step(player, "hi");
 		en.step(player, "quest");
 		en.step(player, "yes"); // Test saying yes and then everything
 		en.step(player, "everything");
-		
-		// -----------------------------------------------
-		
-		// Check karma and XP values before
-		final int xp = player.getXP();
-		final double karma = player.getKarma();
-		
+
 		// -----------------------------------------------
 		// Check the player receives their reward
 		
@@ -404,6 +415,23 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		// -----------------------------------------------
 
 		player.setQuest(questSlot, "done;0"); // Reset quest
+	}
+	
+	@Test
+	public void testGivingoneFruitthenEverything() {
+		// -----------------------------------------------
+		
+		npc = SingletonRepository.getNPCList().get("Coralia");
+		en = npc.getEngine();
+		
+		// -----------------------------------------------
+		
+		// Set up and accept the quest
+		en.step(player, "hi");
+		en.step(player, "hat");
+		en.step(player, "fruit");
+		en.step(player, "yes");
+		en.step(player, "bye");
 		
 		// -----------------------------------------------
 		// Testing giving one item first and then the rest
@@ -417,11 +445,6 @@ public class FruitsForCoraliaTest extends ZonePlayerAndNPCTestImpl {
 		
 		// -----------------------------------------------
 		
-		en.step(player, "hi");
-		en.step(player, "hat");
-		en.step(player, "fruit");
-		en.step(player, "yes");
-		en.step(player, "bye");
 		en.step(player, "hi");
 		en.step(player, "quest");
 		en.step(player, "cherries");
