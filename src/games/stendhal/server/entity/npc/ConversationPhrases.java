@@ -62,6 +62,8 @@ public class ConversationPhrases {
 
 	public static final List<String> PURCHASE_MESSAGES = Arrays.asList("buy", "purchase");
 
+	public static final List<String>  KEEP_OUTFIT= Arrays.asList("keep", "yes", "this", "no");
+
 	/**
 	 * Combine a string collection (list) with additional strings.
 	 *
