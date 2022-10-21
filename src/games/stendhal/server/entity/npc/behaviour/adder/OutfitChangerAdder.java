@@ -168,9 +168,15 @@ public class OutfitChangerAdder {
 							final String itemName = currentBehavRes.getChosenItemName();
 							if (outfitBehaviour.changeOutfit(currentBehavRes, npc, player)) 
 							{
-								logger.debug("Selling a " + itemName + " to player " + player.getName());
+								logger.debug("Player " + player.getName() + " is Changing " + itemName);
 								npc.say("Here is a different "+ itemName + ", do you want to #keep it or #change it?");
-								npc.setCurrentState(ConversationStates.CHANGING); // success
+								npc.setCurrentState(ConversationStates.CHANGING);
+							}
+							else 
+							{
+								logger.debug("Player " + player.getName() + " has seen all the available " + itemName + "s");
+								npc.say("This the last " + itemName + " we have! do you want to #keep it or #change it?");
+								npc.setCurrentState(ConversationStates.CHANGING);
 							}
 
 							// currentBehavRes = null;

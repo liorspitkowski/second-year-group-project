@@ -32,6 +32,7 @@ import games.stendhal.server.entity.player.Player;
  */
 public class OutfitChangerBehaviour extends MerchantBehaviour {
 	private int itemIndex;
+	private boolean newPurchase;
 	private List<Outfit> possibleNewOutfits;
 	public static final int NEVER_WEARS_OFF = -1;
 
@@ -164,6 +165,7 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 	public boolean transactAgreedDeal(ItemParserResult res, final EventRaiser seller, final Player player) {
 		final String outfitType = res.getChosenItemName();
 		itemIndex = 0;
+		newPurchase = true;
 
 		if (!player.getOutfit().isCompatibleWithClothes()) {
 			// if the player is wearing a non standard player base
@@ -186,7 +188,6 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 
 	public boolean changeOutfit(ItemParserResult res, final EventRaiser seller, final Player player)
 	{
-		final String outfitType = res.getChosenItemName();
 		
 		if(itemIndex < possibleNewOutfits.size()-1)
 		{
@@ -194,7 +195,7 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 			putOnOutfit(player, res.getChosenItemName());
 			if(itemIndex == possibleNewOutfits.size()-1)
 			{
-				seller.say("This the last " + outfitType + " we have! Don't forget to #return when you don't need it anymore.");
+				itemIndex = -1;
 				return false;
 			}
 			return true;	
@@ -262,8 +263,11 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 
 
 		possibleNewOutfits = outfitTypes.get(outfitType);
-		if(itemIndex == 0)
+		if(newPurchase)
+		{
 			Collections.shuffle(possibleNewOutfits);
+			newPurchase = false;
+		}
 		final Outfit newOutfit = possibleNewOutfits.get(itemIndex);
 		player.setOutfit(newOutfit.putOver(player.getOutfit()), true);
 		player.registerOutfitExpireTime(endurance);
