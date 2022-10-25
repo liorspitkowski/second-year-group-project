@@ -1681,6 +1681,7 @@ public class Player extends DressedEntity implements UseListener {
 
 		if (sheep != null) {
 			if (squaredDistance(sheep) > 7 * 7) {
+				this.sendPrivateText("Your sheep is too far away, wait for it to get closer before changing zone.");
 				return false;
 			}
 		}
@@ -1689,6 +1690,7 @@ public class Player extends DressedEntity implements UseListener {
 
 		if (pet != null) {
 			if (squaredDistance(pet) > 7 * 7) {
+				this.sendPrivateText("Your pet is too far away, wait for it to get closer before changing zone.");
 				return false;
 			}
 		}
