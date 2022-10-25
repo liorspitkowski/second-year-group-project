@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import games.stendhal.common.grammar.Grammar;
+import games.stendhal.common.parser.Sentence;
 import games.stendhal.server.entity.npc.ChatAction;
 import games.stendhal.server.entity.npc.ConversationPhrases;
 import games.stendhal.server.entity.npc.ConversationStates;
+import games.stendhal.server.entity.npc.EventRaiser;
 import games.stendhal.server.entity.npc.SpeakerNPC;
 import games.stendhal.server.entity.npc.action.CollectRequestedItemsAction;
 import games.stendhal.server.entity.npc.action.EquipRandomAmountOfItemAction;
@@ -85,7 +87,7 @@ public class FruitsForCoralia extends AbstractQuest {
 	 * Required items for the quest.
 	 */
 	protected static final String NEEDED_ITEMS = "apple=4;banana=5;cherry=9;grapes=2;pear=4;watermelon=1;pomegranate=2";
-
+	protected ItemCollection missingItems;
     @Override
     public void addToWorld() {
         fillQuestInfo("Fruits for Coralia",
@@ -144,11 +146,56 @@ public class FruitsForCoralia extends AbstractQuest {
 			res.add("It's been a while since I brought Coralia fresh fruits for her hat, I wonder if the fruits have withered?");
         } else {
         	// not (currently) repeatable
-        	res.add("I brought Coralia the fruits she needed for her hat and she restored it to its old radiance.");
+        	res.add("I brought Coralia the fruits she needed fo 				NEEDED_ITEMS_LIST.remove(i);r her hat and she restored it to its old radiance.");
 		}
 		return res;
 	}
+ 	
 
+ 	private void checkForAllIngredients(final Player player, final EventRaiser npc)
+ 	{	
+ 		if (missingItems == null) {
+ 			String questState = player.getQuest(QUEST_SLOT);
+ 			missingItems = new ItemCollection();
+ 			missingItems.addFromQuestStateString(questState);
+ 		}
+ 		
+ 		List<Map.Entry<String, Integer>> toremove = new ArrayList<Map.Entry<String, Integer>>();
+		for (final Map.Entry<String, Integer> item : missingItems.entrySet()) {
+ 		
+			if(player.drop(item.getKey(),item.getValue())){
+				toremove.add(item);
+			
+ 			}
+ 		}
+		for (final Map.Entry<String, Integer> item : toremove) {
+			missingItems.remove(item.getKey());
+		}
+		
+ 		
+		if (missingItems.size() > 0) {
+			npc.say("Oh, you didnt have all of the items I need, I'd still like" + ": "
+							+ Grammar.enumerateCollection(missingItems.toStringListWithHash()) + ".");
+			player.addKarma(-5.0);
+			return;
+			
+		} else {
+			new SetQuestAction(QUEST_SLOT, "done").fire(player, null, null);
+			npc.say("My hat has never looked so delightful! Thank you ever so much! Here, take this as a reward.");
+			player.addXP(300);
+			player.addKarma(5);
+			
+			new EquipRandomAmountOfItemAction("crepes suzette", 1, 5).fire(player, null, null);
+			new EquipRandomAmountOfItemAction("minor potion", 2, 8).fire(player, null, null);
+			
+			player.setQuest(QUEST_SLOT, "done;"
+					+ System.currentTimeMillis());
+			player.notifyWorldAboutChanges();
+			npc.setCurrentState(ConversationStates.ATTENDING);
+		}
+ 			
+ 	}
+ 	
     public void prepareQuestStep() {
     	SpeakerNPC npc = npcs.get("Coralia");
 
@@ -325,6 +372,18 @@ public class FruitsForCoralia extends AbstractQuest {
 			new EquipRandomAmountOfItemAction("minor potion", 2, 8),
 			new SetQuestToTimeStampAction(QUEST_SLOT, 1)
 		);
+    	
+    	// player says they have everything
+    	npc.add(ConversationStates.QUESTION_2, "everything",
+    			null,
+    			ConversationStates.QUESTION_2,
+    			null,
+    			new ChatAction() {
+    			@Override
+    			public void fire(final Player player, final Sentence sentence,
+    					final EventRaiser npc) {
+    				checkForAllIngredients(player,npc);
+    			}});
 
     	// add triggers for the item names
     	final ItemCollection items = new ItemCollection();
