@@ -16,8 +16,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
-import games.stendhal.common.Rand;
+//import games.stendhal.common.Rand;
+
 import games.stendhal.common.grammar.ItemParserResult;
 import games.stendhal.server.core.engine.SingletonRepository;
 import games.stendhal.server.core.events.TurnListener;
@@ -29,6 +31,9 @@ import games.stendhal.server.entity.player.Player;
  * Represents the behaviour of a NPC who is able to sell outfits to a player.
  */
 public class OutfitChangerBehaviour extends MerchantBehaviour {
+	private int itemIndex;
+	private boolean newPurchase;
+	private List<Outfit> possibleNewOutfits;
 	public static final int NEVER_WEARS_OFF = -1;
 
 	/** outfit expiry in minutes */
@@ -159,6 +164,8 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 	@Override
 	public boolean transactAgreedDeal(ItemParserResult res, final EventRaiser seller, final Player player) {
 		final String outfitType = res.getChosenItemName();
+		itemIndex = 0;
+		newPurchase = true;
 
 		if (!player.getOutfit().isCompatibleWithClothes()) {
 			// if the player is wearing a non standard player base
@@ -178,6 +185,24 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 			return false;
 		}
 	}
+
+	public boolean changeOutfit(ItemParserResult res, final EventRaiser seller, final Player player)
+	{
+		
+		if(itemIndex < possibleNewOutfits.size()-1)
+		{
+			itemIndex++;
+			putOnOutfit(player, res.getChosenItemName());
+			if(itemIndex == possibleNewOutfits.size()-1)
+			{
+				itemIndex = -1;
+				return false;
+			}
+			return true;	
+		}
+		return false;
+	}
+
 
 	/**
 	 * removes the special outfit after it outwore.
@@ -236,8 +261,14 @@ public class OutfitChangerBehaviour extends MerchantBehaviour {
 			player.returnToOriginalOutfit();
 		}
 
-		final List<Outfit> possibleNewOutfits = outfitTypes.get(outfitType);
-		final Outfit newOutfit = Rand.rand(possibleNewOutfits);
+
+		possibleNewOutfits = outfitTypes.get(outfitType);
+		if(newPurchase)
+		{
+			Collections.shuffle(possibleNewOutfits);
+			newPurchase = false;
+		}
+		final Outfit newOutfit = possibleNewOutfits.get(itemIndex);
 		player.setOutfit(newOutfit.putOver(player.getOutfit()), true);
 		player.registerOutfitExpireTime(endurance);
 	}

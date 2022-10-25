@@ -124,5 +124,8 @@ public enum ConversationStates {
 	RESTART_OFFERED,
 
 	/** Special state when players should not be able to interact with NPC. */
-	BUSY;
+	BUSY,
+
+	//change outfit
+	CHANGING;
 }
