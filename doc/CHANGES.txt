@@ -2,6 +2,16 @@ Changelog
 ---------
 ---------
 
+1.40uom
+
+*world*
+- added phase "horse hair" to have the same effect as "Ouchit" in Bows for Ouchit quest
+- Anastasia now says the correct name "Florence Bouillabaisse" in her quest
+- Coralia now has the option to accept everything at once
+- added option for player to select which mask to get from Fidorea and other NPCs selling temporary outfits
+- Haunchy now accepts charcoal
+- displays message when player attempts to change zone when their pet/sheep is too far away
+- Lietenant Drilenun no longer suggests that a better weapon exists when holding 'rod of the GM'
 
 1.40
 
