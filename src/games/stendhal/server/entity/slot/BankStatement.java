@@ -1,9 +1,12 @@
 package games.stendhal.server.entity.slot;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import games.stendhal.server.entity.item.Item;
 import games.stendhal.server.entity.player.Player;
-
+import marauroa.common.game.RPObject;
+import marauroa.common.game.RPSlot;
 
 /**
  * manages items in different banks
@@ -25,7 +28,8 @@ public class BankStatement {
 	
 
 	public BankStatement(final Player player) {
-		this.player = player;	
+		this.player = player;
+		
 	}
 	
 	/**
@@ -35,9 +39,22 @@ public class BankStatement {
 	 * @return ArrayList<String>
 	 */
 	public ArrayList<String> getItemsFromBank(Banks bank) {
-		return new ArrayList<String>(); 
+		
+		String bank_name = bank.getSlotName();
+		RPSlot bank_slot = player.getSlot(bank_name);
+		
+		Iterator<RPObject> it = bank_slot.iterator(); 
+		
+		ArrayList<String> allItemsInBank = new ArrayList<String>();
+		
+		while (it.hasNext()) {
+			
+			allItemsInBank.add(((Item)it.next()).getName());
+			
+		}
+		return allItemsInBank;
+		
 	}
-	
-	
 
 }
+
