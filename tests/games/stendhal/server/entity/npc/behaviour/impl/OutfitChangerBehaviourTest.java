@@ -111,10 +111,9 @@ public class OutfitChangerBehaviourTest {
 		en.step(player, "buy");
 		assertEquals("To buy a mask will cost 20. Do you want to buy one?", getReply(npc));
 		
-		Integer maskBefore= player.getOutfit().getLayer("mask");
 		en.step(player, "yes"); en.step(player, "keep");
-		Integer maskAfter= player.getOutfit().getLayer("mask");
-		assertNotEquals(maskBefore, maskAfter);
+
+		assertEquals("Thanks, and please don't forget to #return it when you don't need it anymore!", getReply(npc));
 	}
 	
 	/*
