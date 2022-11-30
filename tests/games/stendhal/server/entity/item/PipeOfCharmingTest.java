@@ -66,7 +66,8 @@ public class PipeOfCharmingTest {
      */
 	@Test
     public void testDescription(){
-		assertTrue(false);
+		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		assertThat(pipe.describe(), is("You see a pipe, it looks rather charming"));
 		
 		
 
