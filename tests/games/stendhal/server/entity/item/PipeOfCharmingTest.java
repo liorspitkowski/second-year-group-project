@@ -15,8 +15,7 @@ package games.stendhal.server.entity.item;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-
+import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.assertFalse;
 
@@ -26,9 +25,12 @@ import org.junit.Test;
 
 import games.stendhal.server.maps.MockStendlRPWorld;
 import games.stendhal.server.entity.player.Player;
+import games.stendhal.server.core.engine.StendhalRPZone;
+import games.stendhal.server.entity.creature.Creature;
 
 import marauroa.common.Log4J;
 import utilities.RPClass.ItemTestHelper;
+import utilities.RPClass.CreatureTestHelper;
 import utilities.PlayerTestHelper;
 
 
@@ -38,18 +40,30 @@ public class PipeOfCharmingTest {
 		Log4J.init();
 		MockStendlRPWorld.get();
 		ItemTestHelper.generateRPClasses();
+		CreatureTestHelper.generateRPClasses();
 
 	}
-	@Test
+	
+	
     /*
-     * Test to see if entities attack whilst pipe is equipped
+     * To test that creatures continue to target the player once charmed     * 
      */
-    public void testNoEntityAttack(){
-		assertTrue(false);
-        
+	@Test
+    public void testCreatureTarget(){
+		StendhalRPZone zone = new StendhalRPZone("testzone", 10, 10);
+		final Player jim = PlayerTestHelper.createPlayer("craig");
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","PipeOfCharming","PipeOfCharming",null);
+		final Creature enemy = new Creature();
+		enemy.setAtk(5);
+		zone.add(jim);
+		zone.add(enemy);
+		enemy.setTarget(jim);
+		assertEquals(enemy.getAttackTarget(), jim);
+		jim.equip("lhand", pipe);
+		assertEquals(enemy.getAttackTarget(), jim);	        
     }
 	/*
-	 * A test to see if the item can be equipped in left or right hand, and not head
+	 * To test to if the item can only be equipped in left or right hand, and not other slots
 	 */
 	@Test
 	public void testCorrectSlot() {
@@ -58,6 +72,7 @@ public class PipeOfCharmingTest {
 		assertTrue(craig.equip("lhand", pipe));
 		assertTrue(craig.equip("rhand", pipe));
 		assertFalse(craig.equip("head", pipe));
+		assertFalse(craig.equip("armor", pipe));
 	}
 	
     /*
