@@ -17,13 +17,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import games.stendhal.server.entity.mapstuff.block.MovableChest;
+import games.stendhal.common.parser.Sentence;
 import games.stendhal.server.core.config.ZoneConfigurator;
+import games.stendhal.server.core.engine.SingletonRepository;
 import games.stendhal.server.core.engine.StendhalRPZone;
 import games.stendhal.server.core.pathfinder.FixedPath;
 import games.stendhal.server.core.pathfinder.Node;
+import games.stendhal.server.entity.npc.EventRaiser;
+import games.stendhal.server.entity.npc.ConversationStates;
 import games.stendhal.server.entity.npc.SpeakerNPC;
 import games.stendhal.server.entity.npc.behaviour.adder.SellerAdder;
 import games.stendhal.server.entity.npc.behaviour.impl.SellerBehaviour;
+import games.stendhal.server.entity.npc.ChatAction;
+import games.stendhal.server.entity.player.Player;
 
 /**
  * Builds Karl, the farmer NPC.
@@ -86,6 +93,17 @@ public class FarmerNPC implements ZoneConfigurator {
                 offerings.put("empty sack", 10);
                 new SellerAdder().addSeller(this, new SellerBehaviour(offerings));
 				addGoodbye("Bye bye. Be careful on your way.");
+				add(ConversationStates.ATTENDING, "cart",
+						null,
+						ConversationStates.ATTENDING,
+						null,
+						new ChatAction() {
+						@Override
+						public void fire(final Player player, final Sentence sentence,
+								final EventRaiser npc) {
+							placeCart(npc,player);
+						}
+				});
 			}
 		};
 
@@ -94,5 +112,22 @@ public class FarmerNPC implements ZoneConfigurator {
 		npc.setPosition(64, 76);
 		npc.initHP(100);
 		zone.add(npc);
+	}
+	
+	private void placeCart(EventRaiser npc, Player player) {
+		if(player.getLevel() < 300){
+			npc.say("Sorry this item is for high level players only!");
+		}
+		else {
+			npc.say("Here is a cart!");
+			StendhalRPZone zone = SingletonRepository.getRPWorld().getZone("0_ados_forest_w2");
+			String cartDescription = "You see a strange looking cart. Do you think you could use it to store things?";
+			MovableChest handCart = new MovableChest(npc.getX(),npc.getY());
+			handCart.setPosition(npc.getX(), npc.getY());
+			handCart.setDescription(cartDescription);
+			zone.add(handCart);
+		}
+		
+		
 	}
 }
