@@ -51,10 +51,9 @@ public class PipeOfCharmingTest {
 	@Test
     public void testCreatureTarget(){
 		StendhalRPZone zone = new StendhalRPZone("testzone", 10, 10);
-		final Player jim = PlayerTestHelper.createPlayer("craig");
-		final PipeOfCharming pipe = new PipeOfCharming("pipe","PipeOfCharming","PipeOfCharming",null);
+		final Player jim = PlayerTestHelper.createPlayer("jim");
+		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
 		final Creature enemy = new Creature();
-		enemy.setAtk(5);
 		zone.add(jim);
 		zone.add(enemy);
 		enemy.setTarget(jim);
@@ -62,13 +61,31 @@ public class PipeOfCharmingTest {
 		jim.equip("lhand", pipe);
 		assertEquals(enemy.getAttackTarget(), jim);	        
     }
+	
+    /*
+     * To test that creatures can see PipeOfCharming Equipped 
+     */
+	@Test
+    public void testGetPipe(){
+		StendhalRPZone zone = new StendhalRPZone("testzone", 10, 10);
+		final Player finn = PlayerTestHelper.createPlayer("finn");
+		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		final Creature enemy = new Creature();
+		zone.add(finn);
+		zone.add(enemy);
+		enemy.setTarget(finn);
+		finn.equip("lhand", pipe);
+		assertTrue(enemy.getAttackTarget().isEquipped("Pipe of Charming"));	        
+    }
+	
+	
 	/*
 	 * To test to if the item can only be equipped in left or right hand, and not other slots
 	 */
 	@Test
 	public void testCorrectSlot() {
 		final Player craig = PlayerTestHelper.createPlayer("craig");
-		final PipeOfCharming pipe = new PipeOfCharming("pipe","PipeOfCharming","PipeOfCharming",null);
+		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
 		assertTrue(craig.equip("lhand", pipe));
 		assertTrue(craig.equip("rhand", pipe));
 		assertFalse(craig.equip("head", pipe));
