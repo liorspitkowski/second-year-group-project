@@ -52,7 +52,7 @@ public class PipeOfCharmingTest {
     public void testCreatureTarget(){
 		StendhalRPZone zone = new StendhalRPZone("testzone", 10, 10);
 		final Player jim = PlayerTestHelper.createPlayer("jim");
-		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
 		final Creature enemy = new Creature();
 		zone.add(jim);
 		zone.add(enemy);
@@ -69,13 +69,13 @@ public class PipeOfCharmingTest {
     public void testGetPipe(){
 		StendhalRPZone zone = new StendhalRPZone("testzone", 10, 10);
 		final Player finn = PlayerTestHelper.createPlayer("finn");
-		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
 		final Creature enemy = new Creature();
 		zone.add(finn);
 		zone.add(enemy);
 		enemy.setTarget(finn);
 		finn.equip("lhand", pipe);
-		assertTrue(enemy.getAttackTarget().isEquipped("Pipe of Charming"));	        
+		assertTrue(enemy.getAttackTarget().isEquipped("pipe"));	        
     }
 	
 	
@@ -85,7 +85,7 @@ public class PipeOfCharmingTest {
 	@Test
 	public void testCorrectSlot() {
 		final Player craig = PlayerTestHelper.createPlayer("craig");
-		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
 		assertTrue(craig.equip("lhand", pipe));
 		assertTrue(craig.equip("rhand", pipe));
 		assertFalse(craig.equip("head", pipe));
@@ -98,7 +98,7 @@ public class PipeOfCharmingTest {
      */
 	@Test
     public void testDescription(){
-		final PipeOfCharming pipe = new PipeOfCharming("Pipe of Charming","tool","pipeofcharming", null);
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
 		assertThat(pipe.describe(), is("You see a pipe, it looks rather charming"));
 		
 		
