@@ -75,7 +75,8 @@ public class PipeOfCharmingTest {
 		zone.add(enemy);
 		enemy.setTarget(finn);
 		finn.equip("lhand", pipe);
-		assertTrue(enemy.getAttackTarget().isEquipped("pipe"));	        
+		assertTrue(enemy.getAttackTarget().isEquipped("pipe"));	    
+		enemy.attack();
     }
 	
 	
@@ -90,6 +91,20 @@ public class PipeOfCharmingTest {
 		assertTrue(craig.equip("rhand", pipe));
 		assertFalse(craig.equip("head", pipe));
 		assertFalse(craig.equip("armor", pipe));
+	}
+	
+	/*
+	 * To test when used
+	 */
+	@Test
+	public void testUse() {
+		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
+		final Player adam = PlayerTestHelper.createPlayer("adam");
+		
+		assertTrue(pipe.onUsed(adam));
+		
+		
+		
 	}
 	
     /*
