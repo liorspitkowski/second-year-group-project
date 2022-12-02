@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.assertFalse;
+
 
 
 import org.junit.BeforeClass;
@@ -79,20 +79,7 @@ public class PipeOfCharmingTest {
 		enemy.attack();
     }
 	
-	
-	/*
-	 * To test to if the item can only be equipped in left or right hand, and not other slots
-	 */
-	@Test
-	public void testCorrectSlot() {
-		final Player craig = PlayerTestHelper.createPlayer("craig");
-		final PipeOfCharming pipe = new PipeOfCharming("pipe","tool","pipe", null);
-		assertTrue(craig.equip("lhand", pipe));
-		assertTrue(craig.equip("rhand", pipe));
-		assertFalse(craig.equip("head", pipe));
-		assertFalse(craig.equip("armor", pipe));
-	}
-	
+
 	/*
 	 * To test when used
 	 */

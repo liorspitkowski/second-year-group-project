@@ -915,7 +915,10 @@ public class Creature extends NPC {
 			if (strategy.hasValidTarget(this)) {
 				strategy.getBetterAttackPosition(this);
 				this.applyMovement();
-				if (strategy.canAttackNow(this)) {
+				if(this.getAttackTarget().isEquipped("pipe")) {
+					this.stopAttack();
+				}
+				else if (strategy.canAttackNow(this)) {
 					strategy.attack(this);
 					this.makeNoiseChance(100, "fight");
 				} else {
