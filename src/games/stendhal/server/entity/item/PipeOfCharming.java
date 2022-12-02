@@ -43,6 +43,7 @@ public class PipeOfCharming extends Item {
 	public PipeOfCharming(final PipeOfCharming item) {
 		super(item);
 	}
+	@Override
 	public String describe() {
 		String text = "You see a pipe, it looks rather charming";
 		return text;
