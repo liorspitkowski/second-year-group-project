@@ -12,15 +12,12 @@
 package games.stendhal.server.entity.mapstuff.block;
 
 import java.awt.geom.Rectangle2D;
-//import java.util.Arrays;
-//import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import games.stendhal.server.entity.mapstuff.chest.Chest;
 import games.stendhal.common.Direction;
-import games.stendhal.common.MathHelper;
 import games.stendhal.common.Rand;
 import games.stendhal.common.constants.SoundLayer;
 import games.stendhal.server.core.engine.SingletonRepository;
@@ -46,13 +43,9 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
 
     private static final Logger logger = Logger.getLogger(Block.class);
 
-    /** number of seconds until a block is reset to its original position */
-    static final int RESET_TIMEOUT_IN_SECONDS = 5 * MathHelper.SECONDS_IN_ONE_MINUTE;
-
     /** number of seconds until another attempt to rest the block to its original position is attempted */
     static final int RESET_AGAIN_DELAY = 10;
 
-    //private static final String Z_ORDER = "z";
 
     private int startX;
     private int startY;
@@ -60,7 +53,7 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
 
    private final List<String> sounds;
 
-    private boolean resetBlock = true;
+    private boolean resetBlock = false;
     private boolean wasMoved = false;
 
     public MovableChest(int x, int y) {
@@ -68,7 +61,6 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
         this.startX = x;
         this.startY = y;
         sounds = null;
-
     }
 
     /**
@@ -76,10 +68,6 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
      */
     public void reset() {
         wasMoved = false;
-        List<BlockTarget> blockTargetsAt = this.getZone().getEntitiesAt(getX(), getY(), BlockTarget.class);
-        for (BlockTarget blockTarget : blockTargetsAt) {
-            blockTarget.untrigger();
-        }
         this.setPosition(startX, startY);
         SingletonRepository.getTurnNotifier().dontNotify(this);
         this.notifyWorldAboutChanges();
@@ -97,26 +85,9 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
         if (!this.mayBePushed(d)) {
             return;
         }
-        // before push
-//        List<BlockTarget> blockTargetsAt = this.getZone().getEntitiesAt(getX(), getY(), BlockTarget.class);
-//        for (BlockTarget blockTarget : blockTargetsAt) {
-//            blockTarget.untrigger();
-//        }
-
-        // after push
         int x = getXAfterPush(d);
         int y = getYAfterPush(d);
         this.setPosition(x, y);
-//        blockTargetsAt = this.getZone().getEntitiesAt(x, y, BlockTarget.class);
-//        for (BlockTarget blockTarget : blockTargetsAt) {
-//            if (blockTarget.doesTrigger(this, p)) {
-//                blockTarget.trigger(this, p);
-//            }
-//        }
-        if (resetBlock) {
-            SingletonRepository.getTurnNotifier().dontNotify(this);
-            SingletonRepository.getTurnNotifier().notifyInSeconds(RESET_TIMEOUT_IN_SECONDS, this);
-        }
         wasMoved = true;
         this.sendSound();
         this.notifyWorldAboutChanges();
@@ -174,17 +145,6 @@ public class MovableChest extends Chest implements ZoneEnterExitListener,
         return !collision;
     }
 
-    /**
-     * Get the shape of this Block
-     *
-     * @return the shape or null if this Block has no shape
-     */
-    public String getShape() {
-        if (this.has("shape")) {
-            return this.get("shape");
-        }
-        return null;
-    }
 
     @Override
     public void onEntered(ActiveEntity entity, StendhalRPZone zone, int newX, int newY) {

@@ -34,8 +34,6 @@ import utilities.RPClass.BlockTestHelper;
 public class FarmerNPCTest extends ZonePlayerAndNPCTestImpl{
 
 	private Player player = null;
-	private SpeakerNPC npc = null;
-	private Engine en = null;
 	private static final String ZONE_NAME = "0_ados_forest_w2";
 	
 	@BeforeClass
@@ -52,7 +50,6 @@ public class FarmerNPCTest extends ZonePlayerAndNPCTestImpl{
 		final StendhalRPZone zone = new StendhalRPZone("0_ados_forest_w2",200, 200);
 		MockStendlRPWorld.get().addRPZone(zone);
 		new FarmerNPC().configureZone(zone, null);
-
 		player = PlayerTestHelper.createPlayer("bob");
 	}
 	
