@@ -191,7 +191,7 @@
     <description>You see a shovel, a tool for digging.</description>
     <implementation class-name="games.stendhal.server.entity.item.Shovel"/>
     <attributes>
-      <menu value="Dig|Use"/>
+      <menu value="Dig|Use"></menu>
       <use_sound value="shovel_dig"/>
     </attributes>
     <weight value="10.0"/>
@@ -261,5 +261,26 @@
       <slot name="rhand"/>
     </equipable>
   </item>
+
+  <item name="pipe">
+    <type class="tool" subclass="pipe" tileid="-1"></type>
+    <description>You see a pipe, it looks rather charming</description>
+    <implementation class-name="games.stendhal.server.entity.item.PipeOfCharming"></implementation>
+    <attributes>
+      <menu value="Use"></menu>
+      <use_sound value="shovel_dig"/>
+    </attributes>
+    <weight value="1.0"/>
+    <value value="1"/>
+    <equipable>
+      <slot name="ground"/>
+      <slot name="content"/>
+      <slot name="bag"/>
+      <slot name="trade"/>
+      <slot name="lhand"/>
+      <slot name="rhand"/>
+    </equipable>
+  </item>
+
 
 </items>
