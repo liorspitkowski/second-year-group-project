@@ -15,7 +15,7 @@ package games.stendhal.server.entity.item;
 import java.util.Map;
 import games.stendhal.server.entity.RPEntity;
 /**
- * Represents a creature summon Pipe.
+ * Represents a pipe of charming.
  */
 public class PipeOfCharming extends Item {
 
