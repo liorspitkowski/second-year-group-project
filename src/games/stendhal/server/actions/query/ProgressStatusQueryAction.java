@@ -13,14 +13,16 @@ package games.stendhal.server.actions.query;
 
 import static games.stendhal.common.constants.Actions.PROGRESS_STATUS;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import games.stendhal.server.actions.ActionListener;
 import games.stendhal.server.actions.CommandCenter;
 import games.stendhal.server.core.engine.SingletonRepository;
 import games.stendhal.server.core.rp.StendhalQuestSystem;
 import games.stendhal.server.entity.player.Player;
+import games.stendhal.server.entity.slot.BankStatement;
+import games.stendhal.server.entity.slot.Banks;
 import games.stendhal.server.events.ProgressStatusEvent;
 import marauroa.common.game.RPAction;
 
@@ -64,7 +66,7 @@ public class ProgressStatusQueryAction implements ActionListener {
 	 * @param player Player to sent the event to
 	 */
 	private void sendProgressTypes(Player player) {
-		List<String> list = Arrays.asList("Open Quests", "Completed Quests", "Production");
+		List<String> list = Arrays.asList("Open Quests", "Completed Quests", "Production", "Bank Statement");
 		player.addEvent(new ProgressStatusEvent(list));
 		player.notifyWorldAboutChanges();
 	}
@@ -88,10 +90,13 @@ public class ProgressStatusQueryAction implements ActionListener {
 		} else if (progressType.equals("Production")) {
 			player.addEvent(new ProgressStatusEvent(progressType,
 					SingletonRepository.getProducerRegister().getWorkingProducerNames(player)));
+		} else if (progressType.equals("Bank Statement")) {
+			player.addEvent(new ProgressStatusEvent(progressType, Arrays.asList("All Banks")));
+			
 		}
 		player.notifyWorldAboutChanges();
 	}
-
+	
 	/**
 	 * sends details about a selected item
 	 *
@@ -110,7 +115,32 @@ public class ProgressStatusQueryAction implements ActionListener {
 			player.addEvent(new ProgressStatusEvent(progressType, item,
 					SingletonRepository.getProducerRegister().getProductionDescription(player, item),
 					SingletonRepository.getProducerRegister().getProductionDetails(player, item)));
+		}  
+		else if (progressType.equals("Bank Statement")) {
+			
+			 List<String> itemsFromAllBanks = new ArrayList<String>();
+			 BankStatement bank_statement = new BankStatement(player);
+			 // cycles through every bank
+			 for (Banks bank_name: Banks.values()) {
+				List <String> itemsFromBank = new ArrayList<String>();
+				// gets every item from a bank
+				itemsFromBank = bank_statement.getItemsFromBank(bank_name);
+				if (!itemsFromBank.isEmpty()) {
+					// if it is not empty, adds it to a string of items
+					String stringToAdd = bank_name.getSlotName() + ": ";
+					for (String item_name: itemsFromBank)
+						stringToAdd += item_name + ", ";
+					// removes extra comma at the end
+					stringToAdd = stringToAdd.substring(0, stringToAdd.length() - 2);
+					itemsFromAllBanks.add(stringToAdd);
+				}
+			 }
+		
+			 player.addEvent(new ProgressStatusEvent(progressType, item, "Items from all banks", itemsFromAllBanks));
+			
 		}
 		player.notifyWorldAboutChanges();
+	
 	}
 }
+
