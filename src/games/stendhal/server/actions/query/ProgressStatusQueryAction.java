@@ -120,18 +120,22 @@ public class ProgressStatusQueryAction implements ActionListener {
 			
 			 List<String> itemsFromAllBanks = new ArrayList<String>();
 			 BankStatement bank_statement = new BankStatement(player);
+			 // cycles through every bank
 			 for (Banks bank_name: Banks.values()) {
 				List <String> itemsFromBank = new ArrayList<String>();
+				// gets every item from a bank
 				itemsFromBank = bank_statement.getItemsFromBank(bank_name);
 				if (!itemsFromBank.isEmpty()) {
+					// if it is not empty, adds it to a string of items
 					String stringToAdd = bank_name.getSlotName() + ": ";
 					for (String item_name: itemsFromBank)
 						stringToAdd += item_name + ", ";
-			
-
+					// removes extra comma at the end
+					stringToAdd = stringToAdd.substring(0, stringToAdd.length() - 2);
 					itemsFromAllBanks.add(stringToAdd);
 				}
 			 }
+		
 			 player.addEvent(new ProgressStatusEvent(progressType, item, "Items from all banks", itemsFromAllBanks));
 			
 		}

@@ -20,7 +20,7 @@ public class BankStatementTest {
 	 * Tests for getItemsFromBank(), adds item to banks chest and checks if it is present in bank statement
 	 */
 	@Test
-	public final void testAddItemToBankStatement() {		
+	public final void testAddItemToBankStatementToSemosBank() {		
 		// creates test world and player
 		StendhalRPZone localzone = new StendhalRPZone("testzone", 20, 20);
 		SingletonRepository.getRPWorld().addRPZone(localzone);
@@ -36,6 +36,28 @@ public class BankStatementTest {
 		// creates bank statement and checks if it contains cheese, should be true
 		BankStatement bs = new BankStatement(player);
 		assertTrue(bs.getItemsFromBank(Banks.SEMOS).contains("cheese"));
+	}
+	
+	/**
+	 * Tests for getItemsFromBank(), adds item to banks chest and checks if it is present in bank statement
+	 */
+	@Test
+	public final void testAddItemToBankStatementToFadoBank() {		
+		// creates test world and player
+		StendhalRPZone localzone = new StendhalRPZone("testzone", 20, 20);
+		SingletonRepository.getRPWorld().addRPZone(localzone);
+		final Player player = PlayerTestHelper.createPlayer("briana");
+		
+		/// gives them an item "cheese" and places it in their bank chest
+		StackableItem item = (StackableItem) SingletonRepository.getEntityManager().getItem("cheese");
+		player.equip(Banks.FADO.getSlotName(), item);
+		localzone.add(player);
+		assertFalse(player.isEquipped("cheese"));
+		assertEquals(1, player.getTotalNumberOf("cheese"));
+		
+		// creates bank statement and checks if it contains cheese, should be true
+		BankStatement bs = new BankStatement(player);
+		assertTrue(bs.getItemsFromBank(Banks.FADO).contains("cheese"));
 	}
 	
 	
