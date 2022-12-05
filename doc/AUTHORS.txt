@@ -204,25 +204,31 @@ Notable contributors:
   
 - Benjamin Eichhoefer
   · Fixed the "horse hair" bug involving the Bowls for Ouchit quest
+  · Contributed to the "pipe of charming" feature
   
 - Boran Wang
   · Fixed the "Fish Soup" bug where Florence Bouillabaisse is misspelt
-  
+  · Contributed to the "pipe of charming" feature
+    
 - Olivia Borgstrom
   · Added a feature for Coralia to accept everything during the fruits for coralia quest
+  · Contributed to the "hand carts" feature
 
 - Nusaybah Alarfaj
   · Added a feature to allow Players to choose what mask they get from Fidorea
-
+  · Contributed to the "hand carts" feature
+  
 - Briana Neagu
   · Added a feature which allows Hauncy to accept charcoal as part of the Coal for Hauncy
- 
+  · Contributed to the "bank statements" feature
+  
 - Lior Spitkowski
   · Added a message when the Sheep or other pet is too far away when trying to change zones
+  · Contributed to the "bank statements" feature
 
 - Zunayed Ahamed
   · Fixed Lieutenant Drilenun suggesting that a better weapon exists when infact it does not.
-
+  · Contributed to the "hand carts" feature
 
 
 	

@@ -2,6 +2,13 @@ Changelog
 ---------
 ---------
 
+1.41uom
+
+*world*
+- added a pipe of charming that makes all enemies peaceful and follow you
+- created a hand cart that allows players to create a personal, pushable chest
+- added bank statement feature to the travel log
+
 1.40uom
 
 *world*
