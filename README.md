@@ -1,3 +1,4 @@
+## README
 Mirrored Second Year Group Project from GitLabs. Only my feature development branches was imported, the other members' branches were omitted in addition to all the issues/tasks.
 
 This was done as a team working with Stendhal, an open-source game written in Java.
@@ -5,6 +6,8 @@ This was done as a team working with Stendhal, an open-source game written in Ja
 My contributions:
 - Testing and fixing a bug that doesn't allow players to teleport when their pet is too far.
 - Pair-programming a test and an additional feature of displaying a bank statement in the player's UI which displays the items in their chests.
+
+# Stendhal
 
 [![Stendhal Tower](https://arianne-project.org/screens/stendhal/THM_MagicTower98small.jpeg)](https://arianne-project.org/screens/stendhal/MagicTower98.jpg)
 [![Achievements](https://arianne-project.org/screens/stendhal/THM_Achievement_Stendhal98.jpg)](https://arianne-project.org/screens/stendhal/Achievement_Stendhal98.png)
